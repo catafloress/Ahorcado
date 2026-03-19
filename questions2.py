@@ -1,72 +1,81 @@
 import random 
 
-categorias = {"Programacion": ["python","programa", "variable","funcion", "bucle"],
-"Matematicas": ["entero", "fraccion", "decimal", "factorial", "suma"],
-"Lenguaje": ["cadena", " palabra", "oracion", "letra", "texto"]}
+categorias = {"programacion": ["python", "variable", "funcion", "bucle",]
+, "basico": ["programa","cadena","entero","lista"]}
 
-print("Categorias disponibles:")
-for i, cat in enumerate(categorias.keys(), start=1):
-        print(f"{i}.{cat}")
+palabras_usadas = []
 
 while True:
-    eleccion = input("Elegi una categoria(numero): ")
-    if eleccion.isdigit() and 1 <= int(eleccion) <= len(categorias):
-        nombre_categoria = list(categorias.keys())[int(eleccion)-1]
+
+    print("Categorías disponibles:")
+    for cat in categorias:
+        print("-", cat)
+
+    categoria = input("Elegí una categoría: ")
+
+    if categoria not in categorias:
+        print("Categoría no válida\n")
+        continue
+
+    palabras_disponibles = []
+    for palabra in categorias[categoria]:
+        if palabra not in palabras_usadas:
+            palabras_disponibles.append(palabra)
+
+    if len(palabras_disponibles) == 0:
+        print("Ya usaste todas las palabras de esta categoría")
         break
-    else:
-        print("Entrada no valida. Ingresa el numero de la categoria")
 
-palabras_disponibles = categorias[nombre_categoria]
+    palabra = random.choice(palabras_disponibles)
+    palabras_usadas.append(palabra)
 
-palabras_a_jugar = random.sample(palabras_disponibles, len(palabras_disponibles))
-puntaje_total = 0
-
-print(f"\n Bienvenido al Ahorcado! Categoria: {nombre_categoria}\n")
-
-for palabra in palabras_a_jugar:
     letras_adivinadas = []
-    intentos = 6
-    puntaje_palabra = 0
+    attempts = 6
+    puntaje = 0
 
-    while intentos > 0:
-        progreso = ""
+    print("¡Bienvenido al Ahorcado!")
+    print()
+
+    while attempts > 0:
+        progress = ""
         for letra in palabra:
             if letra in letras_adivinadas:
-                progreso += letra + " "
-            else: 
-                progreso += "_ "
-        print(progreso)
+                progress += letra + " "
+            else:
+                progress += "_ "
+        print(progress)
 
-        if "_" not in progreso:
-            print("Ganaste")
-            puntaje_palabra += 6 
+        if "_" not in progress:
+            print("¡Ganaste!")
+            puntaje += 6
             break
-        print(f"Intentos restantes: {intentos}")
-        print(f"Letras usadas: {', '.join(letras_adivinadas)}")
 
-        letra = input("Ingresá una letra: ").lower()
+        print(f"Intentos restantes: {attempts}")
+        print(f"Letras usadas: ", letras_adivinadas)
+
+        letra = input("Ingresá una letra: ")
 
         if len(letra) != 1 or not letra.isalpha():
-            print("Entrada no válida.\n")
+            print("Entrada no valida")
             continue
 
         if letra in letras_adivinadas:
-            print("Ya usaste esa letra.\n")
-        elif letra in palabra:
+            print("Ya usaste esa letra.")
+        elif letra in palabra: 
             letras_adivinadas.append(letra)
-            print("¡Bien! Esa letra está en la palabra.\n")
+            print("¡Bien! Esa letra está en la palabra.")
         else:
             letras_adivinadas.append(letra)
-            intentos -= 1
-            puntaje_palabra -= 1  # cada letra incorrecta resta 1 punto
-            print("Esa letra no está en la palabra.\n")
+            attempts -= 1
+            puntaje -= 1 
+            print ("Incorrecto")
 
-    else:  # Si se termina el while sin adivinar
-        print(f"¡Perdiste! La palabra era: {palabra}")
-        puntaje_palabra = 0
+    if attempts == 0:
+        print("Perdiste. La palabra era: ", palabra)
+        puntaje = 0
 
-    puntaje_total += puntaje_palabra
-    print(f"Puntaje actual: {puntaje_total}\n{'-'*30}\n")
+    print("Puntaje: ", puntaje)
 
-print(f"Juego terminado. Puntaje total: {puntaje_total}")
-        
+    seguir = input("Queres jugar otra ronda? (s/n):")
+    if seguir != "s":
+        break
